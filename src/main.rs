@@ -21,13 +21,18 @@ fn main() {
 	input.make_ascii_lowercase();
 	let words = input.unicode_word_indices();
 
-	let mut counts = BTreeMap::<AwlSublist, BTreeSet<&str>>::new();
+	let mut counts = BTreeMap::<AwlSublist, BTreeMap<&str, BTreeSet<&str>>>::new();
 
 	for (word_pos, actual_word) in words {
 		let base_word = lemmas.resolve(actual_word);
 
 		if let Some((awl_list, awl_word)) = awl.get(base_word).copied() {
-			counts.entry(awl_list).or_default().insert(awl_word);
+			counts
+				.entry(awl_list)
+				.or_default()
+				.entry(awl_word)
+				.or_default()
+				.insert(actual_word);
 
 			print!(
 				"{start}..{end} {actual_word:?} is in AWL sublist {awl_list}",
@@ -51,7 +56,11 @@ fn main() {
 			count = words.len(),
 		);
 
-		let mut words = words.iter().copied();
+		let mut words = words.iter().map(|(_awl_word, actual_set)| {
+			// We only care that we get one of the words that was actually in the essay.
+			// That is, if the word is in the essay in multiple forms, it only counts for one AWL word, but we want to list the form of the word that was actually used, so we just pick one.
+			actual_set.first().unwrap()
+		});
 		if let Some(first) = words.next() {
 			print!(": {first}");
 			for rest in words {
