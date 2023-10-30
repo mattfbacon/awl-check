@@ -30,7 +30,7 @@ pub fn load_awl<'a>(lemmas: &Lemmas<'a>, raw: &'a str) -> Awl<'a> {
 			.map(str::trim)
 			.filter(|word| !word.is_empty())
 			.map(|actual_word| (actual_word, lemmas.resolve(actual_word)));
-		mapping.extend(words.map(|(base_word, awl_word)| (base_word, (Sublist(list_num), awl_word))));
+		mapping.extend(words.map(|(awl_word, base_word)| (base_word, (Sublist(list_num), awl_word))));
 	}
 
 	mapping
