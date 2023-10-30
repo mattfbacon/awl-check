@@ -11,10 +11,10 @@ mod lemmas;
 
 fn main() {
 	let raw_lemmas = include_str!("../lemma.txt");
-	let lemmas = Lemmas::load(&raw_lemmas);
+	let lemmas = Lemmas::load(raw_lemmas);
 
 	let raw_awl = include_str!("../awl.txt");
-	let awl = load_awl(&lemmas, &raw_awl);
+	let awl = load_awl(&lemmas, raw_awl);
 
 	let mut input = String::new();
 	std::io::stdin().read_to_string(&mut input).unwrap();
